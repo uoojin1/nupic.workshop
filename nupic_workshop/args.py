@@ -17,13 +17,27 @@
 #
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
-from nupic_workshop.plotter import PlotlyPlotter
-from nupic_workshop.args import parseArgs
+import sys
+from optparse import OptionParser
+
+# Options parsing.
+parser = OptionParser(
+  usage="%prog [options]"
+)
+parser.add_option(
+  "-d",
+  "--data-file",
+  default=None,
+  dest="dataFile",
+  help="Which CSV data file to process.")
+parser.add_option(
+  "-n",
+  "--name",
+  default="Just some data...",
+  dest="name",
+  help="What to name the thing we're making or doing."
+)
 
 
-if __name__ == "__main__":
-  (options, args) = parseArgs()
-  PlotlyPlotter(
-    dataFile=options.dataFile,
-    dataName=options.name
-  ).plotRawData()
+def parseArgs():
+  return parser.parse_args(sys.argv[1:])
