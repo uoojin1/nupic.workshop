@@ -40,4 +40,7 @@ parser.add_option(
 
 
 def parseArgs():
-  return parser.parse_args(sys.argv[1:])
+  (options, args) = parser.parse_args(sys.argv[1:])
+  if not options.dataFile:
+    parser.error("Data file name not given!")
+  return options, args
