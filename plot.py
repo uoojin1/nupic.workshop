@@ -24,6 +24,6 @@ from nupic_workshop.args import parseArgs
 if __name__ == "__main__":
   (options, args) = parseArgs()
   PlotlyPlotter(
-    dataFile=options.dataFile,
-    dataName=options.name
+    dataFile=args[0],
+    dataName=options.title
   ).plotRawData()

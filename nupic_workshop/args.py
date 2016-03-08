@@ -25,22 +25,16 @@ parser = OptionParser(
   usage="%prog [options]"
 )
 parser.add_option(
-  "-d",
-  "--data-file",
-  default=None,
-  dest="dataFile",
-  help="Which CSV data file to process.")
-parser.add_option(
-  "-n",
-  "--name",
+  "-t",
+  "--title",
   default="Just some data...",
-  dest="name",
-  help="What to name the thing we're making or doing."
+  dest="title",
+  help="The title of the thing we're making or doing."
 )
 
 
 def parseArgs():
   (options, args) = parser.parse_args(sys.argv[1:])
-  if not options.dataFile:
-    parser.error("Data file name not given!")
+  if len(args) != 1:
+    parser.error("Data file path was not given!")
   return options, args

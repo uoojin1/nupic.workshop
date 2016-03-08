@@ -18,28 +18,35 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 import os
+import ntpath
+from datetime import datetime
 
 import simplejson as json
 import pandas as pd
 
 from nupic.frameworks.opf.modelfactory import ModelFactory
+from nupic.data.inference_shifter import InferenceShifter
 
 from nupic_workshop.args import parseArgs
 
+
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+OUTPUT_DIR = "out"
 MODEL_PARAMS_PATH = "model_params/model_params.json"
 
 
-def getMinMax(dataFilePath):
-  df = pd.read_csv(dataFilePath, skiprows=3, names=["timestamp", "value"])
-  return df.min().values[1], df.max().values[1]
+def getDataFrame(dataFilePath):
+  return pd.read_csv(dataFilePath, skiprows=3, names=["timestamp", "value"])
 
 
+def getMinMax(dataFrame):
+  return dataFrame.min().values[1], dataFrame.max().values[1]
 
 
-def createModel(dataFile):
+def createModel(dataFrame):
   with open(MODEL_PARAMS_PATH, "r") as dataIn:
     modelParams = json.loads(dataIn.read())
-  minInput, maxInput = getMinMax(os.path.join("data", dataFile))
+  minInput, maxInput = getMinMax(dataFrame)
 
   # RDSE - resolution calculation
   valueEncoderParams = \
@@ -53,6 +60,38 @@ def createModel(dataFile):
   return model
 
 
+def runDataThroughModel(model, dataFrame):
+  shifter = InferenceShifter()
+  out = []
+  for index, row in dataFrame.iterrows():
+    timestamp = datetime.strptime(row["timestamp"], DATE_FORMAT)
+    value = int(row["value"])
+    result = model.run({
+      "timestamp": timestamp,
+      "value": value
+    })
+    if index % 100 == 0:
+      print "Read %i lines..." % index
+    result = shifter.shift(result)
+    out.append({
+      "timestamp": timestamp,
+      "value": value,
+      "prediction": result.inferences["multiStepBestPredictions"][1]
+    })
+  return pd.DataFrame(out)
+
+
+def main(inputPath):
+  inputFileName = ntpath.basename(inputPath)
+  dataFrame = getDataFrame(inputPath)
+  model = createModel(dataFrame)
+  outputFrame = runDataThroughModel(model, dataFrame)
+  if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
+  outputFrame.to_csv(os.path.join(OUTPUT_DIR, inputFileName), index=False)
+
+
 if __name__ == "__main__":
   (options, args) = parseArgs()
-  model = createModel(options.dataFile)
+  dataPath = args[0]
+  main(dataPath)

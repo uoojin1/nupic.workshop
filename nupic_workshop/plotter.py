@@ -68,12 +68,10 @@ class PlotlyPlotter(object):
 
     py.sign_in(self.username, self.apiKey)
 
-    self._setupDirectories()
-
     # Setup data
     self.dataFile = dataFile
     self.dataName = dataName if dataName else dataFile
-    self.dataPath = os.path.join(self.dataDir, dataFile)
+    self.dataPath = os.path.join(os.getcwd(), dataFile)
     self.rawData = getCSVData(self.dataPath) if self.dataPath else None
 
     # For open shape markers, append "-open" to strings below:
@@ -81,20 +79,23 @@ class PlotlyPlotter(object):
                     "hexagon", "triangle-down"]
 
 
-  def _setupDirectories(self):
-    root = os.path.dirname(os.path.realpath(__file__))
-    self.dataDir = os.path.abspath(os.path.join(root, "..", "data"))
-
-
-  def _addValues(self):
+  def _addValues(self, name=None, title=None):
     """Return data values trace."""
+    if name is None:
+      name = "value"
+    if title is None:
+      title = "Value"
     return Scatter(x=self.rawData["timestamp"],
-                   y=self.rawData["value"],
-                   name="Value",
+                   y=self.rawData[name],
+                   name=title,
                    line=Line(
                      width=1.5
                    ),
                    showlegend=False)
+
+
+  def _hasPredictions(self):
+    return "prediction" in self.rawData
 
 
   @staticmethod
@@ -144,6 +145,8 @@ class PlotlyPlotter(object):
     traces = []
 
     traces.append(self._addValues())
+    if self._hasPredictions():
+      traces.append(self._addValues(name="prediction", title="Prediction"))
 
     # Create plotly Data and Layout objects:
     data = Data(traces)
