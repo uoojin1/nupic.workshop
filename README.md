@@ -1,6 +1,10 @@
 ## Setup
 
-### Plot.py Setup
+### NuPIC
+
+You must have NuPIC installed. See <https://github.com/numenta/nupic> for instructions.
+
+### Plot.ly Setup
 
 You need to sign up for a free [Plot.ly](http://plot.ly) account. Set the following environment variables:
 
