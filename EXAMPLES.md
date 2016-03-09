@@ -15,7 +15,7 @@
 
 #### Plot the Predictions
 
-    python plot.py out/nyc_taxi.csv --title="NYC Taxi Ride Predictions"
+    python plot.py out/prediction_nyc_taxi.csv --title="NYC Taxi Ride Predictions"
 
 <div>
     <a href="https://plot.ly/~rhyolight/211/" target="_blank" title="NYC Taxi Ride Predictions" style="display: block; text-align: center;"><img src="https://plot.ly/~rhyolight/211.png" alt="NYC Taxi Ride Predictions" style="max-width: 100%;width: 1000px;"  width="1000" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
@@ -28,7 +28,7 @@
 
 #### Plot the Anomalies
 
-    python plot.py out/nyc_taxi.csv --title="NYC Taxi Ride Anomalies"
+    python plot.py out/anomaly_nyc_taxi.csv --title="NYC Taxi Ride Anomalies"
 
 <div>
     <a href="https://plot.ly/~rhyolight/261/" target="_blank" title="NYC Taxi Ride Anomalies" style="display: block; text-align: center;"><img src="https://plot.ly/~rhyolight/261.png" alt="NYC Taxi Ride Anomalies" style="max-width: 100%;width: 1000px;"  width="1000" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>

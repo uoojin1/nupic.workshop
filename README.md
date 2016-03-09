@@ -17,31 +17,31 @@ You can run the scripts below on any of the data files found in the [`data`](dat
 
 ### Plot the Input Data
 
-    python plot.py <filepath> --name=<title>
+    python plot.py <path-to-input-file> --name=<title>
 
 ### Run Input Data Through a NuPIC *Prediction* Model
 
 This script will create a new NuPIC model that predicts the next value in the data. This is a one-step-ahead prediction.
 
-    python run_prediction.py <filepath>
+    python run_prediction.py <path-to-input-file>
 
-This will write an output file into the `out/` folder with the same name as the input file.
+This will write an output file to `out/prediction_<input-file-name>.csv`.
 
 ### Plot the Predictions and Input Data
 
-    python plot.py <filepath> --name=<title>
+    python plot.py <path-to-prediction> --name=<title>
 
 ### Run Input Data Through a NuPIC *Anomaly* Model
 
 This script will create a new NuPIC model that returns information about how anomalous the data is at each point in time. 
 
-    python run_anomaly.py <filepath>
+    python run_anomaly.py <path-to-input-file>
 
-Beware that this will overwrite any output file you might have with the same name in the `out/` directory.
+This will write an output file to `out/anomaly_<input-file-name>.csv`.
 
 ### Plot the Anomaly Likelihoods
 
-    python plot.py <filepath> --name=<title> [--log]
+    python plot.py <path-to-anomaly-output> --name=<title> [--log]
 
 By default, this will plot the anomaly likelihood, not the anomaly score. To find out the difference, [check this out](https://www.youtube.com/watch?v=nVCKjZWYavM). 
 

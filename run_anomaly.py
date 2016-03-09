@@ -55,7 +55,10 @@ def main(inputPath):
   outputFrame = runDataThroughModel(model, dataFrame)
   if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
-  outputFrame.to_csv(os.path.join(OUTPUT_DIR, inputFileName), index=False)
+  outputFrame.to_csv(
+    os.path.join(OUTPUT_DIR, "anomaly_" + inputFileName),
+    index=False
+  )
 
 
 if __name__ == "__main__":
