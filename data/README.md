@@ -23,3 +23,9 @@ Loaded from [River View](http://data.numenta.org/ercot-demand/system_wide_demand
 The Electric Reliability Council of Texas (ERCOT) manages scheduling on an electric grid carrying 85 percent of Texas' load.
 
 Data from "west" Texas loaded from [River View](http://data.numenta.org/ercot-loads/actual_loads_of_weather_zones/data.html)
+
+## `portland-911.csv`
+
+An RSS feed which contains geographic locations for the 100 most recent, closed, non-confidential, 911 calls for service received by the City of Portland’s 911 system. This feed is updated every 30 seconds.
+
+Loaded from [River View](http://data.numenta.org/portland-911/portland-911/data.html).
