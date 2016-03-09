@@ -17,13 +17,16 @@
 #
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
-
+"""
+Helper class for Plot.py plots of input data, NuPIC predictions, and NuPIC
+anomaly likelihoods. Some of this is customized for NuPIC data.
+"""
 import os
 import pandas as pd
 import plotly.plotly as py
 
 from plotly.graph_objs import (
-    Data, Figure, Layout, Line, Scatter, XAxis, YAxis)
+    Data, Figure, Layout, Line, Bar, Marker, Scatter, XAxis, YAxis)
 
 try:
   import simplejson as json
@@ -91,11 +94,29 @@ class PlotlyPlotter(object):
                    line=Line(
                      width=1.5
                    ),
+                   yaxis="y1",
                    showlegend=False)
+
+
+  def _addAnomalyScores(self, useLog):
+    yName = "anomalyLikelihood"
+    yTitle = "Anomaly Likelihood"
+    if useLog:
+      yName = "logAnomalyLikelihood"
+      yTitle = "Log(Anomaly Likelihood)"
+    return Bar(x=self.rawData["timestamp"],
+               y=self.rawData[yName],
+               name=yTitle,
+               yaxis="y2",
+               opacity=0.5)
 
 
   def _hasPredictions(self):
     return "prediction" in self.rawData
+
+
+  def _hasAnomalyScores(self):
+    return "anomalyLikelihood" in self.rawData
 
 
   @staticmethod
@@ -114,29 +135,15 @@ class PlotlyPlotter(object):
                     autorange=True,
                     autotick=True
                   ),
+                  yaxis2=YAxis(
+                    overlaying="y",
+                    side="right"
+                  ),
                   barmode="stack",
                   bargap=0)
 
 
-  def setDataFile(self, filename):
-    """Set the data file name; i.e. path from self.dataDir."""
-    self.dataFile = filename
-
-
-  def setDataName(self, name):
-    """Set the name of this data; prints to plot title."""
-    self.dataName = name
-
-
-  def getDataInfo(self):
-    """Return member variables dataFile, dataName, and dataPath."""
-
-    return {"dataFile": self.dataFile,
-            "dataName": self.dataName,
-            "dataPath": self.dataPath}
-
-
-  def plotRawData(self):
+  def plotRawData(self, useLog=False):
     """Plot the data stream."""
 
     if self.rawData is None:
@@ -144,8 +151,12 @@ class PlotlyPlotter(object):
 
     traces = []
 
+    if self._hasAnomalyScores():
+      traces.append(self._addAnomalyScores(useLog))
+
     traces.append(self._addValues())
-    if self._hasPredictions():
+
+    if self._hasPredictions() and not self._hasAnomalyScores():
       traces.append(self._addValues(name="prediction", title="Prediction"))
 
     # Create plotly Data and Layout objects:

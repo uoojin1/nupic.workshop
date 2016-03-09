@@ -17,6 +17,11 @@
 #
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
+"""
+This is a helper to parse command line arguments. It always expects the one and
+only argument to be a path to an input file. It optionally accepts a name
+option.
+"""
 import sys
 from optparse import OptionParser
 
@@ -30,6 +35,14 @@ parser.add_option(
   default="Just some data...",
   dest="title",
   help="The title of the thing we're making or doing."
+)
+parser.add_option(
+  "-l",
+  "--log",
+  action="store_true",
+  default=False,
+  dest="log",
+  help="Whether to use the log of the anomaly likelihood."
 )
 
 

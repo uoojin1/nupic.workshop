@@ -28,7 +28,7 @@ OUTPUT_DIR = "out"
 MODEL_PARAMS_PATH = "model_params/model_params.json"
 
 
-def createPredictionModel(dataFrame):
+def createAnomalyDetectionModel(dataFrame):
   with open(MODEL_PARAMS_PATH, "r") as dataIn:
     modelParams = json.loads(dataIn.read())
   minInput, maxInput = getMinMax(dataFrame)
@@ -40,6 +40,9 @@ def createPredictionModel(dataFrame):
   resolution = max(0.001, (maxInput - minInput) / numBuckets)
   valueEncoderParams["resolution"] = resolution
 
+  # Convert to an anomaly detection model
+  modelParams["modelParams"]["inferenceType"] = "TemporalAnomaly"
+
   model = ModelFactory.create(modelParams)
   model.enableInference({"predictedField": "value"})
   return model
@@ -48,7 +51,7 @@ def createPredictionModel(dataFrame):
 def main(inputPath):
   inputFileName = ntpath.basename(inputPath)
   dataFrame = getDataFrame(inputPath)
-  model = createPredictionModel(dataFrame)
+  model = createAnomalyDetectionModel(dataFrame)
   outputFrame = runDataThroughModel(model, dataFrame)
   if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)

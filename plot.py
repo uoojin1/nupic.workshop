@@ -26,4 +26,4 @@ if __name__ == "__main__":
   PlotlyPlotter(
     dataFile=args[0],
     dataName=options.title
-  ).plotRawData()
+  ).plotRawData(useLog=options.log)
