@@ -16,6 +16,7 @@ To install required python modules:
 #### Yelp Data
 The reviews portion of the [Yelp Challenge Dataset](https://www.yelp.com/dataset_challenge) is used for this classification example. Get the data from the link and 
 
+	mkdir data
 	cp <path to yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json> \
 	data/reviews.json
 
