@@ -16,7 +16,7 @@ from textwrap import TextWrapper
 
 
 wrapper = TextWrapper(width=80)
-_DATA_PATH = "data/review.json"
+_DATA_PATH = "data/reviews.json"
 
 
 def classifyText(text, categoryFingerprints, client):
@@ -41,7 +41,7 @@ def setupCio():
 def createCategories(client, categorySize=1000):
   print "Reading in Yelp data."
   starCategories = defaultdict(list)
-  with open(_DATA_PATH), "rb") as fin:
+  with open(_DATA_PATH, "rb") as fin:
     for i, line in enumerate(fin):
       entry = json.loads(line)
       starCategories[entry["stars"]].append(entry["text"])
