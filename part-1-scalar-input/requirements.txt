@@ -9,7 +9,7 @@ coverage==3.7.1
 execnet==1.4.1
 mock==1.0.1
 numpy==1.10.4
-nupic==1.0.0
+nupic==1.0.1
 ordereddict==1.1
 pandas==0.17.1
 plotly==1.9.6
