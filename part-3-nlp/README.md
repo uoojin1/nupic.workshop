@@ -14,7 +14,7 @@ To install required python modules:
     pip install -r requirements.txt [--user]
 
 #### Yelp Data
-The reviews portion of the [Yelp Challenge Dataset](https://www.yelp.com/dataset_challenge) is used for this classification example. Get the data from the link and 
+The reviews portion of the [Yelp Challenge Dataset](https://www.yelp.com/dataset_challenge) is used for this classification example. Get the data from the link and: 
 
 	mkdir data
 	cp <path to yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_review.json> \
@@ -24,4 +24,3 @@ The reviews portion of the [Yelp Challenge Dataset](https://www.yelp.com/dataset
 ## Running
 
 	python yelp_demo.py
-

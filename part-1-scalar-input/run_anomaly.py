@@ -20,7 +20,7 @@
 import ntpath
 import os
 import simplejson as json
-from nupic.frameworks.opf.modelfactory import ModelFactory
+from nupic.frameworks.opf.model_factory import ModelFactory
 from nupic_workshop.utils import getDataFrame, getMinMax, runDataThroughModel
 from nupic_workshop.args import parseArgs
 
