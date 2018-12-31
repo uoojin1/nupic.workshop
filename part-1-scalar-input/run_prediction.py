@@ -31,13 +31,16 @@ MODEL_PARAMS_PATH = "model_params/model_params.json"
 def createPredictionModel(dataFrame):
   with open(MODEL_PARAMS_PATH, "r") as dataIn:
     modelParams = json.loads(dataIn.read())
-  minInput, maxInput = getMinMax(dataFrame)
+  minInput, maxInput = getMinMax(dataFrame) # min: 8   max: 39197
 
   # RDSE - resolution calculation
   valueEncoderParams = \
     modelParams["modelParams"]["sensorParams"]["encoders"]["value"]
+    # {'type': 'RandomDistributedScalarEncoder', 
+    # 'seed': 42, 'fieldname': 'value', 'name': 'value', 'numBuckets': 130.0}
+
   numBuckets = float(valueEncoderParams.pop("numBuckets"))
-  resolution = max(0.001, (maxInput - minInput) / numBuckets)
+  resolution = max(0.001, (maxInput - minInput) / numBuckets) # 301.45
   valueEncoderParams["resolution"] = resolution
 
   model = ModelFactory.create(modelParams)
@@ -45,15 +48,19 @@ def createPredictionModel(dataFrame):
   return model
 
 
-def main(inputPath):
-  inputFileName = ntpath.basename(inputPath)
+def main(inputPath): # data/nyc_taxi.csv 
+  inputFileName = ntpath.basename(inputPath) # nyc_taxi.csv
   dataFrame = getDataFrame(inputPath)
+  #                  timestamp  value
+  # 0      2014-07-01 00:00:00  10844
+  # 1      2014-07-01 00:30:00   8127
+  # 2      2014-07-01 01:00:00   6210 
   model = createPredictionModel(dataFrame)
   outputFrame = runDataThroughModel(model, dataFrame)
   if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
   outputFrame.to_csv(
-    os.path.join(OUTPUT_DIR, "prediction_" + inputFileName),
+    os.path.join(OUTPUT_DIR, "prediction2_" + inputFileName),
     index=False
   )
 

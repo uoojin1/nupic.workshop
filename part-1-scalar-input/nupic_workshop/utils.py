@@ -59,6 +59,8 @@ def convertToWritableOutput(result, anomalyLikelihood):
 def runDataThroughModel(model, dataFrame):
   shifter = InferenceShifter()
   anomalyLikelihood = anomaly_likelihood.AnomalyLikelihood()
+  print("anomalyLikelihood")
+  print(anomalyLikelihood)
   out = []
   for index, row in dataFrame.iterrows():
     timestamp = datetime.strptime(row["timestamp"], DATE_FORMAT)
