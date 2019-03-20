@@ -1,0 +1,28 @@
+import requests
+
+def getData(conatiner,part):
+	#query prometheus server
+	r = requests.get(url=queryUrl,params=queryParams)
+	data = r.json();
+
+	#process data
+	if part == "cpu":
+		return processCpuData(container)
+	elif part == "mem":
+		return processMemData(data)
+	else:
+		return None,None
+
+# function to process CPU data from prometheus server
+def processCpuData(data):
+	timeValue = None
+	dataValue = None
+	#Do something with data
+	return timeValue,dataValue
+	
+# function to process Mem data from prometheus server
+def processMemData(data):
+	timeValue = None
+	dataValue = None
+	#Do something with data
+	return timeValue,dataValue
