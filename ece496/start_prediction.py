@@ -11,7 +11,7 @@ from nupic.data.inference_shifter import InferenceShifter
 from htm.utils import getDataFrame, getMinMax, runDataThroughModel, convertToWritableOutput
 from htm.args import parseArgs
 from htm.query import getPromData
-from htm.test import generateRandomUsageData
+# from htm.test import generateRandomUsageData
 from htm.config import getCsvFile, DATE_FORMAT,MODEL_PARAMS_PATH
 
 
@@ -32,6 +32,7 @@ def createPredictionModel():
 
 
 def runDatapointThroughModel(model, data, shifter, anomalyLikelihood):
+  print "run data through model", model, data, shifter, anomalyLikelihood
   timestamp = dt.strptime(data[0], DATE_FORMAT)
   value = int(data[1])
   prediction = model.run({
@@ -53,7 +54,20 @@ def getData(mode, container, part):
   else:
     return getPromData(container,part)
   
-
+def generateRandomUsageData():  
+    ts = time.time() # current time
+    i = 0
+    while i < 1000:
+    # while True:
+      timestamp = datetime.datetime.fromtimestamp(ts + i*3600).strftime('%Y-%m-%d %H:%M:%S')
+      hr = datetime.datetime.fromtimestamp(ts + i*3600).hour
+      weekday = datetime.datetime.fromtimestamp(ts + i*3600).weekday()
+      cpu_usage = random.gauss(50,10)
+      if hr >= 16 and hr <= 20:
+          cpu_usage *= random.randrange(3,4)/3
+      cpu_usage /= (7-weekday)
+      yield (timestamp, cpu_usage)
+      i+=1
 
 def main(options):
   # Create Prediction Model
@@ -64,9 +78,10 @@ def main(options):
   # Append data to csv file
   csvFile = getCsvFile(options.mode, options.container,options.part)
   for i in range (0, 10000):
-    with open(csvFile, mode='a') as csv_file:
+    with open(csvFile, mode='w') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=',')
-        usage_data = generateRandomUsageData() # get prometheus data or generated data
+        usage_data = next(generateRandomUsageData()) # get prometheus data or generated data
+        print "USAGE DATA: ", usage_data
         output = runDatapointThroughModel(model, usage_data, shifter, anomalyLikelihood)
         print(output)
         csv_writer.writerow([usage_data[0], output['prediction'], round(usage_data[1])])

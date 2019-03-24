@@ -69,7 +69,6 @@ parser.add_option(
   help="Which part we want to work with: cpu or mem (memory)"
 )
 
-
 def parseArgs():
   (options, args) = parser.parse_args(sys.argv[1:])
   #if len(args) != 1:

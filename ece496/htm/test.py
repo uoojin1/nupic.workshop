@@ -6,7 +6,7 @@ def generateRandomUsageData():
     ts = time.time() # current time
     #i = 0
     #while i < 1000:
-    while true:
+    while True:
       timestamp = datetime.datetime.fromtimestamp(ts + i*3600).strftime('%Y-%m-%d %H:%M:%S')
       hr = datetime.datetime.fromtimestamp(ts + i*3600).hour
       weekday = datetime.datetime.fromtimestamp(ts + i*3600).weekday()
