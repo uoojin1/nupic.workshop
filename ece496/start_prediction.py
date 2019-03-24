@@ -42,16 +42,16 @@ def runDatapointThroughModel(model, data, shifter, anomalyLikelihood):
   resultOut = convertToWritableOutput(result, anomalyLikelihood)
   return resultOut
       
-def getData(mode,container, part):
+def getData(mode, container, part):
   """
   This function returns a tuple (timestamp, usage_value)
   If mode = prom, it queries the prometheus server for values based on container and part
-  If mode = test (default), it simply generates random values for the ue 'conatiner' and cpu 'part'
+  If mode = test (default), it simply generates random values for the ue 'container' and cpu 'part'
   """
   if mode == 'test':
     return generateRandomUsageData()
   else:
-    return getPromData(conatiner,part)
+    return getPromData(container,part)
   
 
 

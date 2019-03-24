@@ -74,10 +74,10 @@ def parseArgs():
   (options, args) = parser.parse_args(sys.argv[1:])
   #if len(args) != 1:
     #parser.error("Data file path was not given!")
-  if ((options.mode != 'prom') or (options.mode != 'test')):
+  if ((options.mode != 'prom') and (options.mode != 'test')):
     parser.error("Mode must either be 'prom' or 'test'")    
-  if ((options.conatiner != 'ue') or (options.conatiner != 'base')):
+  if ((options.container != 'ue') and (options.container != 'base')):
     parser.error("Container must either be 'ue' or 'base'")
-  if ((options.part != 'cpu') or (options.part != 'mem')):
+  if ((options.part != 'cpu') and (options.part != 'mem')):
     parser.error("Part must either be 'cpu' or 'mem'")    
   return options, args

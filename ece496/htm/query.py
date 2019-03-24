@@ -17,11 +17,11 @@ def getPromData(conatiner,part):
 	else:
 		return None,None
 
-def getQuery(conatiner,part):
+def getQuery(container,part):
 	qry = ""
 	if part == "cpu":
 		qry = "rate(container_cpu_usage_seconds{job='cadvisor',name='srsLTE_{0}'}[10m])/(container_spec_cpu_quota{job='cadvisor',name='srsLTE_base'} / container_spec_cpu_period{job='cadvisor',name='srsLTE_{0}'}) * 100".format(conatiner,)
-	elif part = "mem":
+	elif part == "mem":
 		qry = "container_memory_usage_bytes{job='cadvisor',name='srsLTE_{0}'}".format(container,)
 	return qry
 
