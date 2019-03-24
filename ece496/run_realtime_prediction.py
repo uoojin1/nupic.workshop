@@ -57,9 +57,9 @@ def generateSemiRandomCPUUsage(ts, i):
 	return timestamp, cpu_usage
 
 
-def main(inputPath): # data/nyc_taxi.csv 
+def main(inputPath):
 	model = createPredictionModel()
-	ts = time.time() # current time
+	ts = time.time()
 	shifter = InferenceShifter()
 	anomalyLikelihood = anomaly_likelihood.AnomalyLikelihood()
 	for i in range (0, 10000):
