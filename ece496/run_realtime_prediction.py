@@ -50,7 +50,7 @@ def generateSemiRandomCPUUsage(ts, i):
 	timestamp = datetime.datetime.fromtimestamp(ts + i*3600).strftime('%Y-%m-%d %H:%M:%S')
 	hr = datetime.datetime.fromtimestamp(ts + i*3600).hour
 	weekday = datetime.datetime.fromtimestamp(ts + i*3600).weekday()
-	cpu_usage = random.gauss(50,10)
+	cpu_usage = random.gauss(50,2)
 	if hr >= 16 and hr <= 20:
 			cpu_usage *= random.randrange(3,4)/3
 	cpu_usage /= (7-weekday)
@@ -68,8 +68,12 @@ def main(inputPath):
 			cpu_usage_data = generateSemiRandomCPUUsage(ts, i)
 			output = runDatapointThroughModel(model, cpu_usage_data, shifter, anomalyLikelihood)
 			print(output)
-			csv_writer.writerow([cpu_usage_data[0], output['prediction'], round(cpu_usage_data[1])])
-			time.sleep(0.2)
+			squared_error = 0
+			if output['prediction']:
+				squared_error = (float(output['prediction']/100) - round(cpu_usage_data[1])/100) ** 2
+			print("MSE!!! : ", squared_error)
+			csv_writer.writerow([cpu_usage_data[0], output['prediction'], round(cpu_usage_data[1]), squared_error])
+			time.sleep(0.1)
 
 
 if __name__ == "__main__":
