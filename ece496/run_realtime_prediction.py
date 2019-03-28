@@ -12,7 +12,9 @@ from nupic.data.inference_shifter import InferenceShifter
 import time
 import csv
 import sys
-
+# for plotting
+import numpy as np 
+import matplotlib.pyplot as plt
 
 OUTPUT_DIR = "out"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -42,7 +44,22 @@ def runDatapointThroughModel(model, data, shifter, anomalyLikelihood):
 		"value": value
 	})
 	result = shifter.shift(prediction)
+
+	with open('./out/encoding0.csv', mode='a') as csv_file:
+		csv_writer = csv.writer(csv_file, delimiter=' ')
+		csv_writer.writerow(result.sensorInput.dataEncodings[0])
+	with open('./out/encoding1.csv', mode='a') as csv_file:
+		csv_writer = csv.writer(csv_file, delimiter=' ')
+		csv_writer.writerow(result.sensorInput.dataEncodings[1])
+	with open('./out/encoding2.csv', mode='a') as csv_file:
+		csv_writer = csv.writer(csv_file, delimiter=' ')
+		csv_writer.writerow(result.sensorInput.dataEncodings[2])
+	with open('./out/encoding3.csv', mode='a') as csv_file:
+		csv_writer = csv.writer(csv_file, delimiter=' ')
+		csv_writer.writerow(result.sensorInput.dataEncodings[3])
+
 	resultOut = convertToWritableOutput(result, anomalyLikelihood)
+	# print "result out?", resultOut
 	return resultOut
 
 
@@ -71,7 +88,7 @@ def main(inputPath):
 			squared_error = 0
 			if output['prediction']:
 				squared_error = (float(output['prediction']/100) - round(cpu_usage_data[1])/100) ** 2
-			print("MSE!!! : ", squared_error)
+			# print("MSE!!! : ", squared_error)
 			csv_writer.writerow([cpu_usage_data[0], output['prediction'], round(cpu_usage_data[1]), squared_error])
 			time.sleep(0.1)
 
