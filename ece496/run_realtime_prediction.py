@@ -15,6 +15,14 @@ import sys
 # for plotting
 import numpy as np 
 import matplotlib.pyplot as plt
+# for prometheus
+import requests
+
+first_container = 'http://142.150.208.216:9090/api/v1/query?query='
+
+query_parameter = '(sum by (name) (rate(container_cpu_usage_seconds_total{job="cadvisor",name="test-container-cpu-ram-stress-scale"}[30s])*100))/7'
+
+CPU_QUERY = first_container + query_parameter
 
 OUTPUT_DIR = "out"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -38,9 +46,24 @@ def createPredictionModel():
 	model.enableInference({"predictedField": "value"})
 	return model
 
+def callPrometheus(ts, i):
+	timestamp = datetime.datetime.fromtimestamp(ts + i*3600).strftime('%Y-%m-%d %H:%M:%S')
+
+	query = CPU_QUERY
+	r = requests.get(query, auth=('admin', 'admin'))
+	requestJson = r.json()
+	if requestJson['data']['result']:
+		u_value = requestJson['data']['result'][0]['value']
+		print "CPU: ", u_value[1]
+		return timestamp, float(u_value[1])
+	else:
+		print "CPU: NO RESULT"
+		return timestamp, 0
+
 
 def runDatapointThroughModel(model, data, shifter, anomalyLikelihood):
 	timestamp = dt.strptime(data[0], DATE_FORMAT)
+	print "data[0]", data[0]
 	value = int(data[1])
 	prediction = model.run({
 		"timestamp": timestamp,
@@ -101,7 +124,9 @@ def main(inputPath):
 	for i in range (0, 10000):
 		with open('./out/realtime_prediction.csv', mode='a') as csv_file:
 			csv_writer = csv.writer(csv_file, delimiter=',')
-			cpu_usage_data = generateSemiRandomCPUUsage(ts, i)
+			# cpu_usage_data = generateSemiRandomCPUUsage(ts, i)
+			cpu_usage_data = callPrometheus(ts, i)
+			print "cpu_usage_data", cpu_usage_data
 			output = runDatapointThroughModel(model, cpu_usage_data, shifter, anomalyLikelihood)
 			squared_error = 0
 			mse_value = 0
@@ -124,7 +149,7 @@ def main(inputPath):
 			# print "round(cpu...): ", round(cpu_usage_data[1])
 			# print "mse_value", mse_value
 			# print "buffered_prediction", buffered_prediction
-			time.sleep(1)
+			time.sleep(8)
 
 
 if __name__ == "__main__":

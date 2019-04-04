@@ -46,13 +46,13 @@ def animate(i):
             ys2.append(float(actual))
             acc.append(float(prediction) - float(actual))
             ys3.append(float(buffered))
-            squared_error.append(float(squaredError)/100)
+            squared_error.append(float(squaredError)/10000)
     print "MSE", squared_error[-1]
 
     # usage
     ax1.clear()
     ax1.set_title("{}'s {}. prediction VS actual values".format(device, resourceType), fontsize=10)
-    ax1.set_ylim(-5,100)
+    # ax1.set_ylim(-5,100)
     ax1.set_ylabel('{} usage (%)'.format(resourceType), fontsize=10)
     ax1.plot(xs, ys1, 'ro--', linewidth=1, markersize=2, label='prediction')
     ax1.plot(xs, ys2, 'black', linewidth=1, markersize=2, label='actual')
@@ -63,7 +63,7 @@ def animate(i):
     ax2.clear()
     ax2.set_title('prediction error', fontsize=10)
     ax2.plot(xs, acc, 'go--', linewidth=1, markersize=2, label='error')
-    ax2.set_ylim(-100,100)
+    # ax2.set_ylim(-100,100)
     ax2.set_ylabel('error', fontsize=10)
     ax2.legend(loc='upper right')
 
@@ -71,7 +71,7 @@ def animate(i):
     ax3.clear()
     ax3.set_title('mean squared error', fontsize=10)
     ax3.plot(xs, squared_error, 'bo--', linewidth=1, markersize=2, label='mean squared error')
-    ax3.set_ylim(-0.2, 10)
+    # ax3.set_ylim(-0.5, 10)
     ax3.set_ylabel('MSE', fontsize=10)
     ax3.legend(loc='upper right')
 
@@ -83,5 +83,5 @@ if __name__ == "__main__":
         device, resourceType = sys.argv[1], sys.argv[2]
 
 
-    ani = animation.FuncAnimation(fig, animate, interval=1000)
+    ani = animation.FuncAnimation(fig, animate, interval=8000)
     plt.show()

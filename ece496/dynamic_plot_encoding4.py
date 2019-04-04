@@ -38,5 +38,5 @@ def animate(i):
     ax1.imshow(two_d_cpu_encoding, cmap=cmap, norm=norm)
 
 if __name__ == "__main__":
-    ani = animation.FuncAnimation(fig, animate, interval=100)
+    ani = animation.FuncAnimation(fig, animate, interval=1000)
     plt.show()
