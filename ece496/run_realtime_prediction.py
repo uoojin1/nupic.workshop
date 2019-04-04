@@ -78,13 +78,12 @@ def generateSemiRandomCPUUsage(ts, i):
 def calculate_buffer(current_usage, predicted_usage,mse):
 	mse = mse if mse != 0 else 1
 	# from [current_usage - (predicted_usage + added_amt)] ** 2 = mse
-	added_amt = math.abs((current_usage - math.sqrt(mse)) - predicted_usage)
+	added_amt = abs((current_usage - math.sqrt(mse)) - predicted_usage)
 	buffered_value  = (100.0/75.0) * (predicted_usage + added_amt)
+	# print "buffer_value", buffered_value
 	return buffered_value
 	
 	
-
-
 def main(inputPath):
 	model = createPredictionModel()
 	ts = time.time()
@@ -101,15 +100,13 @@ def main(inputPath):
 			csv_writer = csv.writer(csv_file, delimiter=',')
 			cpu_usage_data = generateSemiRandomCPUUsage(ts, i)
 			output = runDatapointThroughModel(model, cpu_usage_data, shifter, anomalyLikelihood)
-			print(output)
 			squared_error = 0
 			mse_value = 0
 			if output['prediction']:
 				squared_error = (prev_prediction - float(cpu_usage_data[1])) ** 2
 				prev_prediction = float(output['prediction'])
-				squared_error_sum += math.abs(squared_error)
+				squared_error_sum += abs(squared_error)
 				mse_value = squared_error_sum/float(i+1)
-				# print("MSE!!! : ", squared_error)
 			if cur_period % SCALE_PERIOD == 0:
 				# reset period counter
 				cur_period = 1
@@ -119,7 +116,12 @@ def main(inputPath):
 			else:
 				cur_period += 1
 			csv_writer.writerow([cpu_usage_data[0], output['prediction'], round(cpu_usage_data[1]), mse_value, buffered_prediction])
-			time.sleep(0.1)
+			# print "\ncpu_usage_data[0]: ", cpu_usage_data[0]
+			# print "prediction: ", output['prediction']
+			# print "round(cpu...): ", round(cpu_usage_data[1])
+			# print "mse_value", mse_value
+			# print "buffered_prediction", buffered_prediction
+			time.sleep(1)
 
 
 if __name__ == "__main__":
