@@ -21,6 +21,7 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 MODEL_PARAMS_PATH = "model_params/model_params.json"
 SCALE_PERIOD = 3
 TARGETED_USAGE = 75 #in percentage
+MIN_USAGE = 25 # in percentage
 
 
 def createPredictionModel():
@@ -81,6 +82,8 @@ def calculate_buffer(current_usage, predicted_usage,mse):
 	added_amt = abs((current_usage - math.sqrt(mse)) - predicted_usage)
 	buffered_value  = (100.0/75.0) * (predicted_usage + added_amt)
 	# print "buffer_value", buffered_value
+	buffered_value = (MIN_USAGE + buffered_value) if buffered_value < current_usage else buffered_value
+	buffered_value = MIN_USAGE if buffered_value < MIN_USAGE else buffered_value
 	return buffered_value
 	
 	
