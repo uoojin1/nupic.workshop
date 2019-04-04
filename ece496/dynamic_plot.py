@@ -47,7 +47,7 @@ def animate(i):
             acc.append(float(prediction) - float(actual))
             ys3.append(float(buffered))
             squared_error.append(float(squaredError)/10000)
-    print "MSE", squared_error[-1]
+    # print "MSE", squared_error[-1]
 
     # usage
     ax1.clear()
