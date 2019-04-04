@@ -5,3 +5,5 @@ include/
 .idea/
 out/
 *.pyc
+env/
+./ece496/requirements.txt

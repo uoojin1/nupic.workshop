@@ -1,5 +1,5 @@
 import ntpath
-import os
+import os, math
 import simplejson as json
 from nupic.frameworks.opf.model_factory import ModelFactory
 from htm.utils import getDataFrame, getMinMax, convertToWritableOutput
@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 OUTPUT_DIR = "out"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 MODEL_PARAMS_PATH = "model_params/model_params.json"
+SCALE_PERIOD = 3
+TARGETED_USAGE = 75 #in percentage
 
 
 def createPredictionModel():
@@ -72,6 +74,15 @@ def generateSemiRandomCPUUsage(ts, i):
 			cpu_usage *= random.randrange(3,4)/3
 	cpu_usage /= (7-weekday)
 	return timestamp, cpu_usage
+	
+def calculate_buffer(current_usage, predicted_usage,mse):
+	mse = mse if mse != 0 else 1
+	# from [current_usage - (predicted_usage + added_amt)] ** 2 = mse
+	added_amt = math.abs((current_usage - math.sqrt(mse)) - predicted_usage)
+	buffered_value  = (100.0/75.0) * (predicted_usage + added_amt)
+	return buffered_value
+	
+	
 
 
 def main(inputPath):
@@ -79,6 +90,12 @@ def main(inputPath):
 	ts = time.time()
 	shifter = InferenceShifter()
 	anomalyLikelihood = anomaly_likelihood.AnomalyLikelihood()
+	
+	#scaling parameters
+	squared_error_sum = 0
+	prev_prediction = 0
+	cur_period = 1
+	buffered_prediction = 0
 	for i in range (0, 10000):
 		with open('./out/realtime_prediction.csv', mode='a') as csv_file:
 			csv_writer = csv.writer(csv_file, delimiter=',')
@@ -86,10 +103,22 @@ def main(inputPath):
 			output = runDatapointThroughModel(model, cpu_usage_data, shifter, anomalyLikelihood)
 			print(output)
 			squared_error = 0
+			mse_value = 0
 			if output['prediction']:
-				squared_error = (float(output['prediction']/100) - round(cpu_usage_data[1])/100) ** 2
-			# print("MSE!!! : ", squared_error)
-			csv_writer.writerow([cpu_usage_data[0], output['prediction'], round(cpu_usage_data[1]), squared_error])
+				squared_error = (prev_prediction - float(cpu_usage_data[1])) ** 2
+				prev_prediction = float(output['prediction'])
+				squared_error_sum += math.abs(squared_error)
+				mse_value = squared_error_sum/float(i+1)
+				# print("MSE!!! : ", squared_error)
+			if cur_period % SCALE_PERIOD == 0:
+				# reset period counter
+				cur_period = 1
+				# calculate buffered value
+				buffered_prediction = calculate_buffer(cpu_usage_data[1],output['prediction'], mse_value)
+				
+			else:
+				cur_period += 1
+			csv_writer.writerow([cpu_usage_data[0], output['prediction'], round(cpu_usage_data[1]), mse_value, buffered_prediction])
 			time.sleep(0.1)
 
 

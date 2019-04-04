@@ -35,21 +35,23 @@ def animate(i):
     graph_data = open('./out/realtime_prediction.csv','r').read()
     totalLines = graph_data.split('\n')
     lines = totalLines[-30:] # only use last 60 items
-    xs, ys1, ys2, acc = [], [], [], []
+    xs, ys1, ys2, ys3, acc = [], [], [], [], []
     squared_error = []
     total_s_e = 0
 
     for line in lines:
         if len(line) > 1:
-            timestamp, prediction, actual, squaredError = line.split(',')
+            timestamp, prediction, actual, squaredError, buffered = line.split(',')
             if prediction == '' or prediction == None:
                 prediction = 0;
             xs.append(timestamp)
             ys1.append(float(prediction))
             ys2.append(float(actual))
             acc.append(float(prediction) - float(actual))
+			ys3.append(buffered)
             total_squared_error.append(float(squaredError))
-            squared_error.append(sum(total_squared_error)/(len(totalLines)))
+            #squared_error.append(sum(total_squared_error)/(len(totalLines)))
+			squared_error.append(squaredError)
     print "TOTAL SQUARED ERROR?", sum(total_squared_error)
     print "MSE", squared_error[-1]
 
@@ -61,6 +63,7 @@ def animate(i):
     ax1.set_ylabel('{} usage (%)'.format(resourceType), fontsize=10)
     ax1.plot(xs, ys1, 'ro--', linewidth=1, markersize=2, label='prediction')
     ax1.plot(xs, ys2, 'black', linewidth=1, markersize=2, label='actual')
+	ax1.plot(xs, ys3, 'go--', linewidth=1, markersize=2, label='buffered')
     ax1.legend(loc='upper right')
 
     # prediction error
