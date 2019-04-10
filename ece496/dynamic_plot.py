@@ -1,3 +1,6 @@
+import matplotlib
+#matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
@@ -75,13 +78,11 @@ def animate(i):
     ax3.set_ylabel('MSE', fontsize=10)
     ax3.legend(loc='upper right')
 
-
 if __name__ == "__main__":
 
     device, resourceType = 'UE', 'CPU'
     if len(sys.argv) > 2:
         device, resourceType = sys.argv[1], sys.argv[2]
-
 
     ani = animation.FuncAnimation(fig, animate, interval=8000)
     plt.show()
